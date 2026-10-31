@@ -16122,6 +16122,26 @@ setInterval(() => {
   document.body.classList.add("lecture-on");
   ScanLive.phrase(q);
 }, 2500);
+function fitMedLecture() {
+  if (!document.body.classList.contains("medb-full")) return;
+  const frame = document.getElementById("mbFrame");
+  if (!frame) return;
+  let doc;
+  try { doc = frame.contentDocument; } catch (e) { return; }
+  if (!doc || !doc.head || doc.getElementById("medFit")) return;
+  const style = doc.createElement("style");
+  style.id = "medFit";
+  style.textContent = [
+    ".studio-rail{display:none !important}",
+    ".studio-shell{padding-left:0 !important;min-height:0 !important}",
+    ".learning-grid{display:block !important}",
+    ".player-column,.media-player{width:100% !important;max-width:none !important}",
+    ".player-surface{width:100% !important;aspect-ratio:16/9 !important;height:auto !important;position:relative !important}",
+    ".youtube-mount,.youtube-mount iframe{position:absolute !important;inset:0 !important;width:100% !important;height:100% !important}"
+  ].join("");
+  doc.head.appendChild(style);
+}
+setInterval(fitMedLecture, 1200);
 function fitHjLecture() {
   if (!document.body.classList.contains("hj-full")) return;
   const frame = document.getElementById("hjFrame");
