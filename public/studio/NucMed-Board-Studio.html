@@ -2807,8 +2807,10 @@ body.scan-live.medb-full:has(#phraseDef article) .work {
   right: 0 !important;
   width: auto !important;
 }
-body.medb-full #phraseDef { pointer-events: none !important; }
+body.medb-full #phraseDef,
 body.medb-full #phraseDef article,
+body.medb-full #phraseDef .shots,
+body.medb-full #phraseDef img { pointer-events: none !important; }
 body.medb-full #phraseDef button { pointer-events: auto !important; }
 body.hj-full #hjFrame {
   position: relative !important;
@@ -6203,7 +6205,7 @@ const ScanLive = {
   async phrase(text) {
     const line = String(text || "").replace(/\s+/g, " ").trim();
     if (line.length < 3) return;
-    if (/queue started|playable lesson|advances when|imaging medical|brigham|harvard|hopkins/i.test(line)) return;
+    if (/queue started|playable lesson|advances when|imaging medical|brigham|harvard|hopkins|loading study|study workspace/i.test(line)) return;
     const key = line.toLowerCase().slice(0, 160);
     if (this.seenPhrase[key]) return;
     this.seenPhrase[key] = 1;
