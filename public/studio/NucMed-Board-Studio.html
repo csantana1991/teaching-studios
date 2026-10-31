@@ -2754,35 +2754,34 @@ body.medb-full #filmRight#filmRight {
   width: 560px !important;
   height: 720px !important;
 }
-body.hj-full #hjAtlasPics {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 92px;
-  width: auto;
-  height: 62px;
-  display: flex;
-  gap: 6px;
-  overflow: hidden;
-  z-index: 720;
-  background: #101820;
-  border-radius: 0;
-  padding: 4px 8px;
-  box-sizing: border-box;
-}
-body.hj-full #hjAtlasPics img {
-  height: 52px;
-  width: 78px;
-  object-fit: cover;
-  background: #000;
-  border-radius: 6px;
-  flex: 0 0 auto;
+body.hj-full #hjAtlasPics { display: none !important; }
+body.hj-full.film-widget #filmRight,
+body.hj-full #filmRight {
+  display: none !important;
+  visibility: hidden !important;
 }
 body.hj-full .work,
 body.hj-full.film-widget .work,
-body.hj-full.wiki-top .work,
+body.hj-full.wiki-top .work {
+  position: fixed !important;
+  top: 104px !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 156px !important;
+  width: auto !important;
+  height: auto !important;
+  overflow: hidden !important;
+}
 body.hj-full #hjFrame {
-  top: 160px !important;
+  position: relative !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: auto !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  flex: 1 1 auto !important;
 }
 body.scan-live.hj-full #modStrip { display: none !important; }
 body.scan-live.medb-full #modStrip {
