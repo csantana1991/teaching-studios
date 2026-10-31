@@ -2700,7 +2700,10 @@ body.scan-live.medb-full #phraseDef article {
 body.scan-live.medb-full #phraseDef p,
 body.scan-live.medb-full #phraseDef strong,
 body.scan-live.medb-full #phraseDef em { white-space: normal !important; }
-body.scan-live.medb-full:not(.lecture-on) #phraseDef { display: none !important; }
+body.scan-live.medb-full:not(.lecture-on) #phraseDef,
+body.scan-live.medb-full #phraseDef:not(:has(article)) { display: none !important; }
+body.scan-live.medb-full #phraseDef .shots { display: flex; gap: 8px; margin-top: 8px; }
+body.scan-live.medb-full #phraseDef .shots img { width: 140px; height: 96px; object-fit: cover; border-radius: 8px; background: #000; flex: 0 0 auto; }
 body.scan-live.medb-full #phraseNext {
   display: inline-block !important;
   position: absolute !important;
@@ -16067,7 +16070,14 @@ setInterval(watchMedPlay, 1500);
 window.addEventListener("message", (e) => {
   if (!e.data || e.data.source !== "mb-play" || !e.data.playing) return;
   if (e.origin !== location.origin) return;
+  if (document.body.classList.contains("lecture-on")) return;
   document.body.classList.add("lecture-on");
+  const host = document.getElementById("phraseDef");
+  if (host && !host.querySelector("article") && typeof ScanLive !== "undefined" && ScanLive.phrase) {
+    const said = document.getElementById("hjSaid");
+    const q = (said && said.value) || (typeof CapRail !== "undefined" && (CapRail.topic || CapRail.line)) || "magnetic resonance imaging";
+    ScanLive.phrase(q);
+  }
 });
 function fitHjLecture() {
   if (!document.body.classList.contains("hj-full")) return;
@@ -16549,6 +16559,7 @@ window.addEventListener("message", (e) => {
 })();
 (function readBar() {
   const step = () => {
+    if (document.body.classList.contains("medb-full") || document.body.classList.contains("hj-full")) return;
     const el = document.getElementById("phraseDef");
     if (el && !el.matches(":hover") && el.scrollWidth > el.clientWidth + 12) {
       el.scrollLeft += 0.45;
