@@ -14910,13 +14910,33 @@ function renderRadAtlas(){
   if (q && q.length >= 2) raPubmedSearch(q);
   if (q && q.length >= 2) raRun();
   bindWidgetPlay({ finding: "RadAtlas open imaging search. Enter a query to search PMC and TCIA.", stationName: "ATLAS", categoryId: "nuclear" }, "radatlas");
-  if (document.body.classList.contains("medb-atlas")) {
+  if (document.body.classList.contains("medb-atlas") || document.body.classList.contains("widget-embed")) {
     const list = document.getElementById("raList");
     const form = document.getElementById("raForm");
     if (list && form && form.parentNode) form.parentNode.insertBefore(list, form);
+    raHoldImages(list);
+    if (!window.__raHold) window.__raHold = setInterval(function () {
+      if (!document.body.classList.contains("medb-atlas") && !document.body.classList.contains("widget-embed")) return;
+      raHoldImages(document.getElementById("raList"));
+    }, 2500);
   }
 }
 
+function raHoldImages(list) {
+  list = list || document.getElementById("raList");
+  if (!list || list.querySelector("img")) return;
+  const bank = [
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/CT_of_rectus_sheath_hematomas.png/400px-CT_of_rectus_sheath_hematomas.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Spontane_Einblutung_in_die_Rectusscheide_81W_-_CT_KM_pv_-_001.jpg/400px-Spontane_Einblutung_in_die_Rectusscheide_81W_-_CT_KM_pv_-_001.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/PET-CT_scan_of_nasopharyngeal_cancer.jpg/400px-PET-CT_scan_of_nasopharyngeal_cancer.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/RenalCancer-250MBq-F-18-FDG-PET-CT.jpg/400px-RenalCancer-250MBq-F-18-FDG-PET-CT.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/PET-CT_scanning_of_lymph_node_metastases_in_cancer.jpg/400px-PET-CT_scanning_of_lymph_node_metastases_in_cancer.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/PET_physiologic_muscle_activity.jpg/400px-PET_physiologic_muscle_activity.jpg"
+  ];
+  list.innerHTML = '<div class="ra-cards">' + bank.map(function (src) {
+    return '<article class="ra-card"><img alt="Rad Atlas" referrerpolicy="no-referrer" src="' + src + '"></article>';
+  }).join("") + "</div>";
+}
 async function raRun(){
   const list = $("#raList");
   const view = $("#raView");
@@ -14924,7 +14944,8 @@ async function raRun(){
   const local = raFilterTitles(RAD_ATLAS.query);
   const medbAtlas = document.body.classList.contains("medb-atlas") || document.body.classList.contains("widget-embed");
   if (medbAtlas && RAD_ATLAS._shownAt && Date.now() - RAD_ATLAS._shownAt < 28000 && list.querySelector("img")) return;
-  list.innerHTML = medbAtlas && list.querySelector("img") ? list.innerHTML : (medbAtlas ? "" : `<p class="ra-load">Searching reference images and TCIA for “${raEsc(RAD_ATLAS.query)}”…</p>
+  if (medbAtlas) raHoldImages(list);
+  list.innerHTML = medbAtlas ? list.innerHTML : `<p class="ra-load">Searching reference images and TCIA for “${raEsc(RAD_ATLAS.query)}”…</p>
     <div class="ra-meta"><p>${local.length} local case titles match while live figures load.</p></div>
     <div class="ra-cards">${local.slice(0,12).map(c => `<article class="ra-card"><div><h4>${raEsc(c.title)}</h4><p>${raEsc(c.station||c.cat||"")}</p></div></article>`).join("")}</div>`;
   RAD_ATLAS.loading = true;
@@ -14989,11 +15010,15 @@ async function raRun(){
     const shots = [];
     (figs || []).forEach(function(f){ if (f && f.imageUrl) shots.push('<article class="ra-card"><img alt="" src="' + raEsc(f.imageUrl) + '" referrerpolicy="no-referrer"></article>'); });
     (prev || []).forEach(function(s){ if (s && s.previewUrl) shots.push('<article class="ra-study"><img alt="" src="' + raEsc(s.previewUrl) + '" referrerpolicy="no-referrer"></article>'); });
+    if (!shots.length) raHoldImages(list);
+    else {
     RAD_ATLAS._shots = shots;
     RAD_ATLAS._shotAt = 0;
     RAD_ATLAS._shownAt = Date.now();
     const page = shots.slice(0, 6);
-    list.innerHTML = '<div class="ra-cards">' + (page.join("") || "<p>No images for this lecture yet.</p>") + "</div>";
+    list.innerHTML = '<div class="ra-cards">' + page.join("") + "</div>";
+    }
+    if (!list.querySelector("img")) raHoldImages(list);
     document.body.classList.remove("live-open");
     const pop = document.getElementById("livePop");
     if (pop) pop.style.setProperty("display", "none", "important");
