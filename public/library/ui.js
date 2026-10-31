@@ -431,7 +431,6 @@
       img.onclick = function (ev) {
         if (!document.body.classList.contains('medb-full')) return
         if (ev) { ev.preventDefault(); ev.stopPropagation() }
-        if (window.showLibPeek) window.showLibPeek(img.currentSrc || img.src, img.alt || '')
       }
       el.appendChild(img)
     })

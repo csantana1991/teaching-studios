@@ -2759,14 +2759,7 @@ body.medb-full #libPeek {
   overflow: hidden;
   box-shadow: 0 16px 40px rgba(0,0,0,.45);
 }
-body.medb-full #libPeek.on {
-  display: block !important;
-  left: 10px;
-  top: 112px;
-  width: min(640px, 52vw);
-  bottom: 206px;
-  z-index: 430;
-}
+body.medb-full #libPeek.on { display: none !important; }
 body.medb-full #libPeek img {
   width: 100%;
   height: calc(100% - 42px);
@@ -16012,8 +16005,11 @@ function relayHjAtlas() {
   });
 }
 setInterval(relayHjAtlas, 2500);
-window.showLibPeek = function (src, title) {
-  if (!src || !document.body.classList.contains("medb-full")) return;
+window.showLibPeek = function () {
+  var box = document.getElementById("libPeek");
+  if (box) box.classList.remove("on");
+  return;
+  if (!document.body.classList.contains("medb-full")) return;
   var box = document.getElementById("libPeek");
   if (!box) {
     box = document.createElement("aside");
