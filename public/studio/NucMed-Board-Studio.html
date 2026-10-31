@@ -2648,12 +2648,12 @@ body.scan-live.medb-full #phraseDef p {
   margin: 0; white-space: nowrap; color: #f4f1ea; font-size: 13px;
 }
 body.scan-live.hj-full #phraseDef {
-  top: 168px !important;
+  top: 118px !important;
   bottom: auto !important;
   left: auto !important;
-  right: 8px !important;
-  width: min(460px, 46vw) !important;
-  height: 210px !important;
+  right: 12px !important;
+  width: min(520px, 42vw) !important;
+  height: min(420px, 52vh) !important;
   min-height: 0;
   flex-direction: column !important;
   align-items: stretch !important;
@@ -2701,8 +2701,38 @@ body.hj-full.film-widget #capFilm.on { right: min(480px, 44vw); }
 #capPics { flex: 1; display: flex; gap: 6px; overflow-x: auto; height: 58px; scroll-behavior: smooth; }
 #capPics img { height: 54px; width: 78px; object-fit: cover; border-radius: 6px; flex: 0 0 auto; background: #000; border: 2px solid transparent; }
 #capPics img.on { border-color: #2ee6c8; }
-body.scan-live.hj-full.film-widget #filmRight {
-  top: 390px !important;
+body.hj-full #filmRight#filmRight {
+  visibility: hidden !important;
+  pointer-events: none !important;
+  left: -4200px !important;
+  right: auto !important;
+  top: 0 !important;
+  bottom: auto !important;
+  width: 560px !important;
+  height: 720px !important;
+}
+body.hj-full #hjAtlasPics {
+  position: fixed;
+  left: 10px;
+  top: 196px;
+  width: min(280px, 28vw);
+  height: 132px;
+  display: flex;
+  gap: 8px;
+  overflow: hidden;
+  z-index: 460;
+  background: rgba(7, 16, 26, 0.92);
+  border-radius: 12px;
+  padding: 8px;
+  box-sizing: border-box;
+}
+body.hj-full #hjAtlasPics img {
+  height: 116px;
+  width: 156px;
+  object-fit: contain;
+  background: #000;
+  border-radius: 8px;
+  flex: 0 0 auto;
 }
 body.scan-live.hj-full #modStrip { display: none !important; }
 body.scan-live.medb-full #modStrip {
@@ -2790,6 +2820,7 @@ body.medb-full #libPeek button {
 </div>
 <aside id="wikiDef" aria-label="Lecture images and definitions"><div id="leftPics"></div></aside>
 <aside id="phraseDef" aria-label="Slide phrase definitions"><button type="button" id="phraseNext">Next term</button></aside>
+<div id="hjAtlasPics" aria-label="Rad Atlas images"></div>
 <div class="rru-exitbar" id="mbBar"><b>Med-b</b><span>Live page</span><button type="button" id="mbAtlas">Atlas</button><button type="button" id="mbExit">Exit</button></div>
 <div id="mbWidgets">
   <button type="button" data-view="board">Board Studio</button>
@@ -15952,6 +15983,35 @@ document.addEventListener("click", (e) => {
 
 
 
+function relayHjAtlas() {
+  if (!document.body.classList.contains("hj-full")) return;
+  const frame = document.querySelector("#filmRight iframe");
+  if (!frame && typeof SideFilm !== "undefined") {
+    SideFilm.open("radatlas", SideFilm.title || "cardiac");
+    return;
+  }
+  const host = document.getElementById("hjAtlasPics");
+  if (!host || !frame) return;
+  let nodes = [];
+  try { nodes = [...frame.contentDocument.querySelectorAll("#raList img")]; } catch (e) { return; }
+  const srcs = [];
+  nodes.forEach((img) => {
+    const src = img.currentSrc || img.src || "";
+    if (src && srcs.indexOf(src) < 0) srcs.push(src);
+  });
+  if (!srcs.length) return;
+  const have = [...host.querySelectorAll("img")].map((img) => img.src).join("|");
+  if (have === srcs.join("|")) return;
+  host.innerHTML = "";
+  srcs.forEach((src) => {
+    const img = document.createElement("img");
+    img.alt = "Rad Atlas";
+    img.referrerPolicy = "no-referrer";
+    img.src = src;
+    host.appendChild(img);
+  });
+}
+setInterval(relayHjAtlas, 2500);
 window.showLibPeek = function (src, title) {
   if (!src || !document.body.classList.contains("medb-full")) return;
   var box = document.getElementById("libPeek");
@@ -16352,7 +16412,7 @@ window.addEventListener("message", (e) => {
     if (medb && t - last < 48) return;
     last = t;
     const hj = document.body.classList.contains("hj-full");
-    ["wikiTop", "capRail", "qaPics", "imgLibCount"].forEach((id) => {
+    ["wikiTop", "capRail", "qaPics", "imgLibCount", "hjAtlasPics"].forEach((id) => {
       const el = document.getElementById(id);
       if (!el || el.matches(":hover")) return;
       if (el.scrollWidth <= el.clientWidth + 24) return;
