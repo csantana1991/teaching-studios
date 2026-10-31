@@ -2673,6 +2673,43 @@ body.scan-live.hj-full #phraseDef article {
 }
 body.scan-live.hj-full #phraseDef p { white-space: normal !important; }
 body.scan-live.hj-full #phraseDef { padding-top: 40px !important; }
+body.scan-live.medb-full #phraseDef {
+  top: 118px !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: 12px !important;
+  width: min(520px, 42vw) !important;
+  height: min(380px, 48vh) !important;
+  min-height: 0;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  overflow: auto !important;
+  z-index: 480;
+  border-radius: 14px;
+  background: #0e1c28;
+  border: 1px solid #2ee6c8;
+  padding: 40px 14px 12px;
+  gap: 8px;
+}
+body.scan-live.medb-full #phraseDef article {
+  flex-direction: column !important;
+  align-items: stretch !important;
+  white-space: normal;
+}
+body.scan-live.medb-full #phraseDef p,
+body.scan-live.medb-full #phraseDef strong,
+body.scan-live.medb-full #phraseDef em { white-space: normal !important; }
+body.scan-live.medb-full #phraseNext {
+  display: inline-block !important;
+  position: absolute !important;
+  top: 8px !important;
+  right: 10px !important;
+  left: auto !important;
+  z-index: 8 !important;
+  border: 0; border-radius: 999px; background: #2ee6c8; color: #082027;
+  font-weight: 800; font-size: 13px; padding: 6px 12px; cursor: pointer;
+}
 body.scan-live.hj-full #phraseNext {
   display: inline-block !important;
   position: absolute !important;
@@ -2701,7 +2738,7 @@ body.hj-full.film-widget #capFilm.on { right: min(480px, 44vw); }
 #capPics { flex: 1; display: flex; gap: 6px; overflow-x: auto; height: 58px; scroll-behavior: smooth; }
 #capPics img { height: 54px; width: 78px; object-fit: cover; border-radius: 6px; flex: 0 0 auto; background: #000; border: 2px solid transparent; }
 #capPics img.on { border-color: #2ee6c8; }
-body.hj-full #filmRight#filmRight {
+body.hj-full #filmRight#filmRight, body.medb-full #filmRight#filmRight {
   visibility: hidden !important;
   pointer-events: none !important;
   left: -4200px !important;
