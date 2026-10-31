@@ -11,9 +11,12 @@
   const res = await fetch(src);
   let html = await res.text();
   html = html
-    .replace("top: 118px !important;", "top: 214px !important;")
-    .replace("width: min(520px, 42vw) !important;", "width: min(400px, 32vw) !important;")
-    .replace("height: min(380px, 48vh) !important;", "height: min(280px, 38vh) !important;");
+    .replace("top: 118px !important;", "top: 168px !important;")
+    .replace("width: min(520px, 42vw) !important;", "width: min(420px, 36vw) !important;")
+    .replace("height: min(380px, 48vh) !important;", "height: min(320px, 42vh) !important;")
+    .replace("body.scan-live.medb-full #phraseDef:not(:has(article)) { display: none !important; }", "body.scan-live.medb-full #phraseDef { display: flex !important; }")
+    .replace('Array.from(defs.querySelectorAll("article")).forEach((node) => node.remove());', 'if (!document.body.classList.contains("medb-full")) Array.from(defs.querySelectorAll("article")).forEach((node) => node.remove());')
+    .replace('if (typeof ScanLive !== "undefined") ScanLive.seenPhrase = {};', 'if (typeof ScanLive !== "undefined" && !document.body.classList.contains("medb-full")) ScanLive.seenPhrase = {};');
   document.open();
   document.write(html);
   document.close();
