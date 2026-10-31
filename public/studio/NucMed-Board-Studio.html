@@ -16050,8 +16050,30 @@ document.addEventListener("click", (e) => {
 
 
 
+function fitHjLecture() {
+  if (!document.body.classList.contains("hj-full")) return;
+  const frame = document.getElementById("hjFrame");
+  if (!frame) return;
+  let doc;
+  try { doc = frame.contentDocument; } catch (e) { return; }
+  if (!doc || !doc.documentElement) return;
+  if (!doc.getElementById("hjFit")) {
+    const style = doc.createElement("style");
+    style.id = "hjFit";
+    style.textContent = [
+      'iframe[src*="NucMed-Board-Studio"]{display:none !important}',
+      'section:has(iframe[src*="NucMed-Board-Studio"]){display:none !important}',
+      'div.grid{display:block !important}',
+      'div.grid > div:first-child{height:calc(100vh - 210px) !important;min-height:320px !important}',
+      'div.grid > div:first-child iframe{width:100% !important;height:100% !important;min-height:320px !important}'
+    ].join("");
+    (doc.head || doc.documentElement).appendChild(style);
+  }
+}
+setInterval(fitHjLecture, 1200);
 function relayHjAtlas() {
   if (!document.body.classList.contains("hj-full")) return;
+  return;
   const frame = document.querySelector("#filmRight iframe");
   if (!frame && typeof SideFilm !== "undefined") {
     SideFilm.open("radatlas", SideFilm.title || "cardiac");
@@ -16228,6 +16250,7 @@ const SideFilm = {
       .catch(() => {});
   },
   open(view, title) {
+    if (document.body.classList.contains("hj-full")) return;
     const right = document.getElementById("filmRight");
     if (!right) return;
     document.body.classList.add("film-widget");
