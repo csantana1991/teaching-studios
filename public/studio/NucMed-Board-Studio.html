@@ -2795,13 +2795,21 @@ body.medb-full.wiki-top .work {
   top: 96px !important;
   bottom: 168px !important;
 }
+body.medb-full #wikiDef,
+body.scan-live.medb-full #wikiDef { display: none !important; }
+body.medb-full .work,
+body.scan-live.medb-full .work,
+body.scan-live.medb-full.wiki-top .work,
+body.scan-live.medb-full.film-widget .work,
 body.medb-full:has(#phraseDef article) .work,
-body.scan-live.medb-full:has(#phraseDef article) .work,
-body.scan-live.medb-full.wiki-top:has(#phraseDef article) .work,
-body.scan-live.medb-full.film-widget:has(#phraseDef article) .work {
-  right: min(560px, 46vw) !important;
+body.scan-live.medb-full:has(#phraseDef article) .work {
+  left: 0 !important;
+  right: 0 !important;
   width: auto !important;
 }
+body.medb-full #phraseDef { pointer-events: none !important; }
+body.medb-full #phraseDef article,
+body.medb-full #phraseDef button { pointer-events: auto !important; }
 body.hj-full #hjFrame {
   position: relative !important;
   top: 0 !important;
