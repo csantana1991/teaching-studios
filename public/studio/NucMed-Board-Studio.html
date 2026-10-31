@@ -2738,7 +2738,13 @@ body.hj-full.film-widget #capFilm.on { right: min(480px, 44vw); }
 #capPics { flex: 1; display: flex; gap: 6px; overflow-x: auto; height: 58px; scroll-behavior: smooth; }
 #capPics img { height: 54px; width: 78px; object-fit: cover; border-radius: 6px; flex: 0 0 auto; background: #000; border: 2px solid transparent; }
 #capPics img.on { border-color: #2ee6c8; }
-body.hj-full #filmRight#filmRight, body.medb-full #filmRight#filmRight {
+body.hj-full #filmRight#filmRight {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  left: -4200px !important;
+}
+body.medb-full #filmRight#filmRight {
   visibility: hidden !important;
   pointer-events: none !important;
   left: -4200px !important;
@@ -2750,26 +2756,33 @@ body.hj-full #filmRight#filmRight, body.medb-full #filmRight#filmRight {
 }
 body.hj-full #hjAtlasPics {
   position: fixed;
-  left: 10px;
-  top: 196px;
-  width: min(280px, 28vw);
-  height: 132px;
+  left: 0;
+  right: 0;
+  top: 92px;
+  width: auto;
+  height: 62px;
   display: flex;
-  gap: 8px;
+  gap: 6px;
   overflow: hidden;
-  z-index: 460;
-  background: rgba(7, 16, 26, 0.92);
-  border-radius: 12px;
-  padding: 8px;
+  z-index: 720;
+  background: #101820;
+  border-radius: 0;
+  padding: 4px 8px;
   box-sizing: border-box;
 }
 body.hj-full #hjAtlasPics img {
-  height: 116px;
-  width: 156px;
-  object-fit: contain;
+  height: 52px;
+  width: 78px;
+  object-fit: cover;
   background: #000;
-  border-radius: 8px;
+  border-radius: 6px;
   flex: 0 0 auto;
+}
+body.hj-full .work,
+body.hj-full.film-widget .work,
+body.hj-full.wiki-top .work,
+body.hj-full #hjFrame {
+  top: 160px !important;
 }
 body.scan-live.hj-full #modStrip { display: none !important; }
 body.scan-live.medb-full #modStrip {
