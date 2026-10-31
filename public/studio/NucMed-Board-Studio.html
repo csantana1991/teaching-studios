@@ -16485,6 +16485,7 @@ window.addEventListener("message", (e) => {
     ["wikiTop", "capRail", "qaPics", "imgLibCount", "hjAtlasPics"].forEach((id) => {
       const el = document.getElementById(id);
       if (!el || el.matches(":hover")) return;
+      if (hj && id === "imgLibCount") return;
       if (el.scrollWidth <= el.clientWidth + 24) return;
       const imgs = el.querySelectorAll("img");
       if (hj) {

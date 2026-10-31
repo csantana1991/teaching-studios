@@ -435,10 +435,14 @@
       el.appendChild(img)
     })
     var pause = document.getElementById('imgLibPause')
-    if (pause) pause.hidden = picked.length <= 18
+    if (pause) {
+      pause.hidden = picked.length <= 18
+      if (document.body.classList.contains('hj-full')) pause.textContent = 'More images'
+    }
     if (!el.children.length) el.textContent = 'No verified images for this lecture'
     if (!window.__imgLibTimer) {
       window.__imgLibTimer = setInterval(function () {
+        if (document.body.classList.contains('hj-full')) return
         if (window.__imgLibPaused) return
         var list = window.__imgLibPicked || []
         var host = document.getElementById('imgLibCount')
@@ -471,6 +475,11 @@
   }
   document.getElementById('imgLibPause').onclick = function (ev) {
     if (ev) ev.stopPropagation()
+    if (document.body.classList.contains('hj-full')) {
+      stepLib(1)
+      this.textContent = 'More images'
+      return
+    }
     window.__imgLibPaused = !window.__imgLibPaused
     this.textContent = window.__imgLibPaused ? 'Play' : 'Pause'
   }
