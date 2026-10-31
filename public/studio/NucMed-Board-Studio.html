@@ -11,12 +11,13 @@
   const res = await fetch(src);
   let html = await res.text();
   html = html
-    .replace("top: 118px !important;", "top: 168px !important;")
-    .replace("width: min(520px, 42vw) !important;", "width: min(420px, 36vw) !important;")
-    .replace("height: min(380px, 48vh) !important;", "height: min(320px, 42vh) !important;")
-    .replace("body.scan-live.medb-full #phraseDef:not(:has(article)) { display: none !important; }", "body.scan-live.medb-full #phraseDef { display: flex !important; }")
+    .replace("top: 118px !important;", "top: 148px !important;")
+    .replace("width: min(520px, 42vw) !important;", "width: min(380px, 32vw) !important;")
+    .replace("height: min(380px, 48vh) !important;", "height: auto !important; max-height: 46vh !important;")
+    .replace("body.scan-live.medb-full #phraseDef:not(:has(article)) { display: none !important; }", "body.scan-live.medb-full #phraseDef { display: flex !important; animation: none !important; transition: none !important; }")
     .replace('Array.from(defs.querySelectorAll("article")).forEach((node) => node.remove());', 'if (!document.body.classList.contains("medb-full")) Array.from(defs.querySelectorAll("article")).forEach((node) => node.remove());')
     .replace('if (typeof ScanLive !== "undefined") ScanLive.seenPhrase = {};', 'if (typeof ScanLive !== "undefined" && !document.body.classList.contains("medb-full")) ScanLive.seenPhrase = {};');
+  html = html.replace("</body>", "<script id=\"medFitStable\">(function(){function fit(){if(!document.body.classList.contains('medb-full'))return;var frame=document.getElementById('mbFrame');if(!frame)return;var doc;try{doc=frame.contentDocument;}catch(e){return;}if(!doc||!doc.head)return;var style=doc.getElementById('medFitBox');if(!style){style=doc.createElement('style');style.id='medFitBox';doc.head.appendChild(style);}style.textContent='.studio-rail{display:none!important}.studio-shell{padding-left:0!important}.learning-grid{display:block!important}.player-column,.media-player{width:100%!important;max-width:none!important;overflow:visible!important}.player-surface{width:min(100%,calc((100vh - 220px) * 1.777))!important;max-width:100%!important;aspect-ratio:16/9!important;height:auto!important;position:relative!important;margin:0!important;overflow:hidden!important}.youtube-mount,.vimeo-mount,.youtube-mount iframe,.vimeo-mount iframe{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:0!important}';}setInterval(fit,800);fit();})();<\/script></body>");
   document.open();
   document.write(html);
   document.close();
