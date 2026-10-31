@@ -2700,7 +2700,6 @@ body.scan-live.medb-full #phraseDef article {
 body.scan-live.medb-full #phraseDef p,
 body.scan-live.medb-full #phraseDef strong,
 body.scan-live.medb-full #phraseDef em { white-space: normal !important; }
-body.scan-live.medb-full:not(.lecture-on) #phraseDef,
 body.scan-live.medb-full #phraseDef:not(:has(article)) { display: none !important; }
 body.scan-live.medb-full #phraseDef .shots { display: flex; gap: 8px; margin-top: 8px; }
 body.scan-live.medb-full #phraseDef .shots img { width: 140px; height: 96px; object-fit: cover; border-radius: 8px; background: #000; flex: 0 0 auto; }
@@ -2790,11 +2789,18 @@ body.scan-live.medb-full.wiki-top .work,
 body.scan-live.medb-full.film-widget .work,
 body.medb-full.wiki-top .work {
   left: 0 !important;
-  right: min(560px, 46vw) !important;
+  right: 0 !important;
   width: auto !important;
   max-width: none !important;
   top: 96px !important;
   bottom: 168px !important;
+}
+body.medb-full:has(#phraseDef article) .work,
+body.scan-live.medb-full:has(#phraseDef article) .work,
+body.scan-live.medb-full.wiki-top:has(#phraseDef article) .work,
+body.scan-live.medb-full.film-widget:has(#phraseDef article) .work {
+  right: min(560px, 46vw) !important;
+  width: auto !important;
 }
 body.hj-full #hjFrame {
   position: relative !important;
@@ -16099,6 +16105,23 @@ window.addEventListener("message", (e) => {
     ScanLive.phrase(q);
   }
 });
+setInterval(() => {
+  if (!document.body.classList.contains("medb-full")) return;
+  const host = document.getElementById("phraseDef");
+  if (!host || host.querySelector("article") || typeof ScanLive === "undefined" || !ScanLive.phrase) return;
+  let title = "";
+  try {
+    const frame = document.getElementById("mbFrame");
+    const doc = frame && frame.contentDocument;
+    const h = doc && doc.querySelector("h1");
+    title = h ? String(h.textContent || "").trim() : "";
+  } catch (e) {}
+  const said = document.getElementById("hjSaid");
+  const q = title || (said && said.value) || "";
+  if (q.length < 4 || /board studio|playable lesson|choose play|openpediatrics/i.test(q)) return;
+  document.body.classList.add("lecture-on");
+  ScanLive.phrase(q);
+}, 2500);
 function fitHjLecture() {
   if (!document.body.classList.contains("hj-full")) return;
   const frame = document.getElementById("hjFrame");
