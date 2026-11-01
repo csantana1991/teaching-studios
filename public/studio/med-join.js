@@ -61,7 +61,7 @@
     if (line.length < 48) line += ". Public lecture for this module.";
     var id = String(lesson.videoId || "");
     var msg = { source: "hj-caption", cc: true, text: line };
-    if (/^[A-Za-z0-9_-]{6,15}$/.test(id)) msg.videoId = id;
+    if (lesson.kind === "youtube" && /^[A-Za-z0-9_-]{6,15}$/.test(id)) msg.videoId = id;
     try { window.postMessage(msg, location.origin); } catch (e) {}
   }
   function openLecture(doc, m, num) {
@@ -82,11 +82,15 @@
       var lesson = lectures[i];
       var slot = host.querySelector("#medbYt");
       if (!slot || !lesson) return;
-      var src = lesson.url || "";
+      var src = String(lesson.url || "");
+      var safe = src.replace(/"/g, "%22");
+      var box = "width:100%;aspect-ratio:16/9;border:0;background:#000;border-radius:10px";
       if (src.indexOf("youtube.com") >= 0 || src.indexOf("youtu.be") >= 0) {
-        slot.innerHTML = "<iframe title='Lecture' src='https://www.youtube-nocookie.com/embed/" + lesson.videoId + "?rel=0' allow='autoplay; encrypted-media; picture-in-picture' allowfullscreen style='width:100%;aspect-ratio:16/9;border:0;background:#000;border-radius:10px'></iframe>";
+        slot.innerHTML = "<iframe title='Lecture' src='https://www.youtube-nocookie.com/embed/" + lesson.videoId + "?rel=0' allow='autoplay; encrypted-media; picture-in-picture' allowfullscreen style='" + box + "'></iframe>";
+      } else if (/\.mp4(\?|$)|\.m3u8(\?|$)|archive\.org\/download\//i.test(src)) {
+        slot.innerHTML = "<video controls playsinline src=\"" + safe + "\" style='" + box + "'></video>";
       } else {
-        slot.innerHTML = "<video controls autoplay playsinline src='" + src + "' style='width:100%;aspect-ratio:16/9;background:#000;border-radius:10px'></video>";
+        slot.innerHTML = "<iframe title='Lecture' src=\"" + safe + "\" allow='autoplay; encrypted-media; picture-in-picture; fullscreen' allowfullscreen style='" + box + "'></iframe>";
       }
       tell(lesson, m.title);
     }
