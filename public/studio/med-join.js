@@ -1,6 +1,7 @@
 (function () {
   var mods = [];
   var ready = false;
+  function harvest() { return mods; }
   function clean(s) {
     return String(s || "").replace(/\s+/g, " ").replace(/[<>"]/g, "").trim();
   }
@@ -46,19 +47,27 @@
       if (/^\d+\s+programs?$/.test((p.textContent || "").trim())) p.textContent = (base + mods.length) + " programs";
     });
   }
+  function tell(lesson, courseTitle) {
+    var line = clean(lesson.title) + " in " + clean(courseTitle);
+    if (line.length < 48) line += ". Public lecture for this module.";
+    var id = String(lesson.videoId || "");
+    var msg = { source: "hj-caption", cc: true, text: line };
+    if (/^[A-Za-z0-9_-]{6,15}$/.test(id)) msg.videoId = id;
+    try { window.postMessage(msg, location.origin); } catch (e) {}
+  }
   function openLecture(doc, m, num) {
     var host = doc.getElementById("medbLecture");
     if (!host) {
       host = doc.createElement("section");
       host.id = "medbLecture";
-      host.setAttribute("style", "position:fixed;inset:0;z-index:80;overflow:auto;background:#141a17;color:#f6f1e8;padding:18px 16px 48px");
       doc.body.appendChild(host);
     }
+    host.setAttribute("style", "position:fixed;top:0;left:0;bottom:0;right:min(420px,36vw);z-index:30;overflow:auto;background:#141a17;color:#f6f1e8;padding:16px 18px 32px;box-sizing:border-box");
     var lectures = m.lectures || [];
     var items = lectures.map(function (l, i) {
       return "<button type='button' data-i='" + i + "' style='display:block;width:100%;text-align:left;margin:0 0 8px;padding:10px 12px;border-radius:10px;border:1px solid #2a3a34;background:#1c2622;color:#f6f1e8'>" + (i + 1) + ". " + clean(l.title) + "</button>";
     }).join("");
-    host.innerHTML = "<button type='button' id='medbBack' style='background:none;border:0;color:#8fd0c8;font:600 14px sans-serif;padding:0'>Back to the 241</button><p style='margin:14px 0 0;letter-spacing:.14em;text-transform:uppercase;color:#e7a598;font-size:12px'>Module " + num + " · " + m.id + " · " + lectures.length + " lectures</p><h1 style='margin:8px 0 14px;font-family:serif;font-size:28px;line-height:1.2'>" + clean(m.title) + "</h1><div id='medbYt' style='max-width:960px'></div><div id='medbList' style='max-width:960px;margin-top:14px'>" + (items || "<p style='color:#b7c4bc'>This original Med-b packet has no lecture recording.</p>") + "</div>";
+    host.innerHTML = "<button type='button' id='medbBack' style='background:none;border:0;color:#8fd0c8;font:600 14px sans-serif;padding:0'>Back to the list</button><p style='margin:14px 0 0;letter-spacing:.14em;text-transform:uppercase;color:#e7a598;font-size:12px'>Module " + num + " · " + m.id + " · " + lectures.length + " lectures</p><h1 style='margin:8px 0 14px;font-family:serif;font-size:28px;line-height:1.2'>" + clean(m.title) + "</h1><div id='medbYt'></div><div id='medbList' style='margin-top:14px'>" + (items || "<p>No lecture file.</p>") + "</div>";
     host.querySelector("#medbBack").onclick = function () { host.remove(); };
     function play(i) {
       var lesson = lectures[i];
@@ -66,11 +75,11 @@
       if (!slot || !lesson) return;
       var src = lesson.url || "";
       if (src.indexOf("youtube.com") >= 0 || src.indexOf("youtu.be") >= 0) {
-        slot.innerHTML = "<iframe id='hj-yt' title='Lecture' src='https://www.youtube-nocookie.com/embed/" + lesson.videoId + "?rel=0' allow='autoplay; encrypted-media; picture-in-picture' allowfullscreen style='width:100%;aspect-ratio:16/9;border:0;background:#000;border-radius:10px'></iframe>";
+        slot.innerHTML = "<iframe title='Lecture' src='https://www.youtube-nocookie.com/embed/" + lesson.videoId + "?rel=0' allow='autoplay; encrypted-media; picture-in-picture' allowfullscreen style='width:100%;aspect-ratio:16/9;border:0;background:#000;border-radius:10px'></iframe>";
       } else {
-        slot.innerHTML = "<video id='hj-yt' controls autoplay playsinline src='" + src + "' style='width:100%;aspect-ratio:16/9;background:#000;border-radius:10px'></video>";
+        slot.innerHTML = "<video controls autoplay playsinline src='" + src + "' style='width:100%;aspect-ratio:16/9;background:#000;border-radius:10px'></video>";
       }
-      try { window.postMessage({ source: "hj-caption", cc: true, text: lesson.title || m.title }, location.origin); } catch (e) {}
+      tell(lesson, m.title);
     }
     Array.prototype.forEach.call(host.querySelectorAll("#medbList button"), function (btn) {
       btn.onclick = function () { play(Number(btn.getAttribute("data-i")) || 0); };
