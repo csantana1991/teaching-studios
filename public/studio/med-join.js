@@ -23,6 +23,18 @@
     var doc;
     try { doc = frame.contentDocument; } catch (e) { return; }
     if (!doc) return;
+    if (!doc.documentElement.getAttribute("data-medb-click")) {
+      doc.documentElement.setAttribute("data-medb-click", "1");
+      doc.addEventListener("click", function (ev) {
+        var btn = ev.target && ev.target.closest && ev.target.closest("[data-medb-id]");
+        if (!btn) return;
+        ev.preventDefault();
+        ev.stopPropagation();
+        var id = btn.getAttribute("data-medb-id");
+        var m = mods.filter(function (row) { return row.id === id; })[0];
+        if (m) openLecture(doc, m, btn.getAttribute("data-num") || "");
+      }, true);
+    }
     var list = doc.querySelector("ul.divide-y");
     if (!list || list.querySelector("[data-medb='1']")) return;
     var base = list.querySelectorAll("li").length;
@@ -31,15 +43,12 @@
       var count = (m.lectures || []).length;
       var li = doc.createElement("li");
       li.setAttribute("data-medb", "1");
-      var link = doc.createElement("a");
-      link.href = "#med-" + m.id;
-      link.className = "flex items-start justify-between gap-3 py-4";
-      link.innerHTML = "<span class='min-w-0'><span class='block font-serif text-lg leading-snug text-cream'>" + clean(m.title) + "</span><span class='mt-1 block text-sm text-dim'>Med-b · " + m.id + "</span><span class='mt-1 block text-sm text-muted'>Module " + num + " · " + count + " lecture" + (count === 1 ? "" : "s") + "</span></span><span class='shrink-0 text-right'><span class='block font-serif text-lg text-muted'>Play</span></span>";
-      link.addEventListener("click", function (ev) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        openLecture(doc, m, num);
-      });
+      var link = doc.createElement("button");
+      link.type = "button";
+      link.setAttribute("data-medb-id", m.id);
+      link.setAttribute("data-num", String(num));
+      link.setAttribute("style", "display:flex;width:100%;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 0;background:none;border:0;color:inherit;text-align:left;cursor:pointer");
+      link.innerHTML = "<span class='min-w-0'><span class='block font-serif text-lg leading-snug text-cream'>" + clean(m.title) + "</span><span class='mt-1 block text-sm text-dim'>Med-b · " + m.id + "</span><span class='mt-1 block text-sm text-muted'>" + num + " · " + count + " lecture" + (count === 1 ? "" : "s") + "</span></span><span class='shrink-0 text-right'><span class='block font-serif text-lg text-muted'>Play</span></span>";
       li.appendChild(link);
       list.appendChild(li);
     });
