@@ -65,13 +65,13 @@
     try { window.postMessage(msg, location.origin); } catch (e) {}
   }
   function openLecture(doc, m, num) {
-    var host = doc.getElementById("medbLecture");
+    var host = document.getElementById("medbLecture");
     if (!host) {
-      host = doc.createElement("section");
+      host = document.createElement("section");
       host.id = "medbLecture";
-      doc.body.appendChild(host);
+      document.body.appendChild(host);
     }
-    host.setAttribute("style", "position:fixed;top:0;left:0;bottom:0;right:min(420px,36vw);z-index:30;overflow:auto;background:#141a17;color:#f6f1e8;padding:16px 18px 32px;box-sizing:border-box");
+    host.style.cssText = "position:fixed;top:148px;left:8px;right:408px;bottom:92px;z-index:470;overflow:auto;background:#141a17;color:#f6f1e8;padding:16px 18px 24px;box-sizing:border-box;border-radius:12px";
     var lectures = m.lectures || [];
     var items = lectures.map(function (l, i) {
       return "<button type='button' data-i='" + i + "' style='display:block;width:100%;text-align:left;margin:0 0 8px;padding:10px 12px;border-radius:10px;border:1px solid #2a3a34;background:#1c2622;color:#f6f1e8'>" + (i + 1) + ". " + clean(l.title) + "</button>";
